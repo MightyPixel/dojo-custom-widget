@@ -5,7 +5,13 @@
     <title>Tutorial: Hello Dojo!</title>
     <script>
         var dojoConfig = {
-            async: true
+            async: true,
+            baseUrl: "./",
+            packages: [
+                        { name: "dojo", location: "lib/dojo"},
+                        { name: "dijit", location: "lib/dijit" },
+                        { name: "dojox", location: "lib/dojox" }
+            ]
         };
     </script>
 </head>
@@ -15,8 +21,7 @@
 
     </div>
     <!-- load Dojo -->
-  <script src="dojo/dojo.js" data-dojo-config="isDebug:1, async:1"></script>
-
+    <script src="lib/dojo/dojo.js" data-dojo-config="isDebug:1, async:1"></script>
     <script>
         require(["dojo/dom", "wiget/SuggestionWiget/SuggestionWidget.js", "dojo/domReady!"],
             function(dom, SuggestionWidget) {
