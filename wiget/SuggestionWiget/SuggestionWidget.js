@@ -1,8 +1,9 @@
-define(["dojo/on", "dojo/_base/declare","dijit/_WidgetBase", "dijit/_TemplatedMixin", "dojo/text!./SuggestionWidget.html", "dojo/dom-style", "dojo/_base/fx", "dojo/_base/lang"],
-    function(on, declare, _WidgetBase, _TemplatedMixin, template, domStyle, baseFx, lang){
+define(["dojo/on", "dojo/_base/declare","dijit/_WidgetBase", "dijit/_TemplatedMixin", "dojo/text!./SuggestionWidget.html", "dojo/dom-style", "dojo/_base/fx", "dojo/request"],
+    function(on, declare, _WidgetBase, _TemplatedMixin, template, domStyle, baseFx, request){
         return declare([_WidgetBase, _TemplatedMixin], {
-            inputNode: null,
+            _inputNode: null,
             suggestionsNode: null,
+
             templateString: template,
             baseClass: "suggestionWidget",
 
@@ -15,8 +16,8 @@ define(["dojo/on", "dojo/_base/declare","dijit/_WidgetBase", "dijit/_TemplatedMi
             _autoCompleteStart: function() {
             },
 
-            _fillDropDown: function() {
-
+            _fillDropDown: function(words) {
+                console.log(words);
             }
 
             _openDropDown: function() {
@@ -32,8 +33,12 @@ define(["dojo/on", "dojo/_base/declare","dijit/_WidgetBase", "dijit/_TemplatedMi
             postCreate: function(){
                 this.inherited(arguments);
                 console.log(this.inputNode);
+                request("words.json", {
+                    handleAs: "json"
+                }).then(_fillDropDown(words));
+
                 this.own(
-                    on(this.inputNode, "keyup", lang.hitch(this, this._handleKeyUp))
+                    on(this._inputNode, "keyup", lang.hitch(this, this._handleKeyUp))
                 );
             }
 
