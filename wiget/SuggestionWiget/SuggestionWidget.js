@@ -1,5 +1,7 @@
-define(["dojo/on", "dojo/_base/declare","dojo/_base/lang","dijit/_WidgetBase", "dijit/_TemplatedMixin", "dojo/text!./SuggestionWidget.html", "dojo/dom-style", "dojo/_base/fx", "dojo/request"],
-    function(on, declare, lang, _WidgetBase, _TemplatedMixin, template, domStyle, baseFx, request){
+define(["dojo/on", "dojo/dom-construct", "dojo/_base/array", "dojo/_base/declare","dojo/_base/lang","dijit/_WidgetBase",
+    "dijit/_TemplatedMixin", "dojo/text!./SuggestionWidget.html", "dojo/dom-style", "dojo/_base/fx", "dojo/request",
+    "wiget/SuggestionWiget/SuggestionItem/SuggestionItem.js"],
+    function(on, domConstruct, arrayUtil, declare, lang, _WidgetBase, _TemplatedMixin, template, domStyle, baseFx, request, SuggestionItem){
         return declare([_WidgetBase, _TemplatedMixin], {
             _inputNode: null,
             _suggestionsNode: null,
@@ -10,32 +12,47 @@ define(["dojo/on", "dojo/_base/declare","dojo/_base/lang","dijit/_WidgetBase", "
             _autoCompleteItems: null,
 
             _handleKeyUp: function(event) {
+
+                var me = this;
                 if (this._autoCompleteItems == null) {
                     request("data/words.json", {
                         handleAs: "json"
                     }).then(function(words) {
-                        this.setAutoCompleteItems(words);
-                        this._fillSuggestions();
+                        console.log(words);
+                        me._autoCompleteItems = words;
+                        me._fillSuggestions();
                     });
+                } else {
+                    this._fillSuggestions();
                 }
-                this._fillDropDown();
             },
 
             _autoCompleteStart: function() {
             },
 
             _fillSuggestions: function() {
-                //TO DO: find matches
+                this._emptySuggestions();
+                var searchText = this._inputNode.value;
+                arrayUtil.forEach(this._autoCompleteItems, function(item, index){
+                    if (item.indexOf(searchText) == 0) {
+                        var itemWidget = new SuggestionItem({suggestionText : item});
+                        itemWidget.appendTo(this._suggestionsNode);
+                    }
+                });
                 this._showDropDown();
             },
 
+            _emptySuggestions: function() {
+                domConstruct.empty(this._suggestionsNode);
+            },
+
             _showDropDown: function() {
-                domStyle.set(domNode, "position", "relative");
-                domStyle.set(domNode, "display","block");
+                domStyle.set(this._suggestionsNode, "position", "relative");
+                domStyle.set(this._suggestionsNode, "display","block");
             },
 
             _hideDropDown: function() {
-                domStyle.set(suggestionsNode, "display","none");
+                domStyle.set(this._suggestionsNode, "display","none");
             },
 
             setAutoCompleteItems: function(words) {
@@ -45,8 +62,6 @@ define(["dojo/on", "dojo/_base/declare","dojo/_base/lang","dijit/_WidgetBase", "
 
             postCreate: function(){
                 this.inherited(arguments);
-                console.log(this.inputNode);
-
                 this.own(
                     on(this._inputNode, "keyup", lang.hitch(this, this._handleKeyUp))
                 );

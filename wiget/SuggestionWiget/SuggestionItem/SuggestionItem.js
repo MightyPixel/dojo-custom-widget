@@ -6,6 +6,6 @@ define(["dojo/_base/declare","dijit/_WidgetBase", "dijit/_TemplatedMixin", "dojo
             suggestionText: "Suggestion",
             templateString: template,
 
-            baseClass: "suggestionItem",
+            baseClass: "suggestionItem"
         });
 });
