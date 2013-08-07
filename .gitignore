@@ -1,7 +1,6 @@
-
 *.DS_Store
-
-lib/dijit/
-lib/dojo/
-lib/dojox/
+.idea/
+dijit/
+dojo/
+dojox/
 

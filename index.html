@@ -23,7 +23,7 @@
     <!-- load Dojo -->
     <script src="lib/dojo/dojo.js" data-dojo-config="isDebug:1, async:1"></script>
     <script>
-        require(["dojo/dom", "wiget/SuggestionWiget/SuggestionWidget", "dojo/domReady!"],
+        require(["dojo/dom", "wiget/SuggestionWiget/SuggestionWidget.js", "dojo/domReady!"],
             function(dom, SuggestionWidget) {
                 var widget = new SuggestionWidget();
                 widget.placeAt(dom.byId("word_suggest"));
