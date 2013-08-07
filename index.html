@@ -3,11 +3,17 @@
 <head>
     <meta charset="utf-8">
     <title>Tutorial: Hello Dojo!</title>
-    <!--<script>
+    <script>
         var dojoConfig = {
             async: true,
+            baseUrl: "./",
+            packages: [
+                        { name: "dojo", location: "lib/dojo"},
+                        { name: "dijit", location: "lib/dijit" },
+                        { name: "dojox", location: "lib/dojox" }
+            ]
         };
-    </script>-->
+    </script>
 </head>
 <body>
     <h1 id="greeting">Hello Dojo!</h1>
@@ -15,8 +21,7 @@
 
     </div>
     <!-- load Dojo -->
-    <!-- <script src="~/Work/DojoWorkspace/dojo/dojo.js" data-dojo-config="isDebug:1, async:1"></script> -->
-    <script src="//ajax.googleapis.com/ajax/libs/dojo/1.9.1/dojo/dojo.js" data-dojo-config="async: true"></script>
+    <script src="lib/dojo/dojo.js" data-dojo-config="isDebug:1, async:1"></script>
     <script>
         require(["dojo/dom", "wiget/SuggestionWiget/SuggestionWidget", "dojo/domReady!"],
             function(dom, SuggestionWidget) {
