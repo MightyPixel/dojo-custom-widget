@@ -33,10 +33,11 @@ define(["dojo/on", "dojo/dom-construct", "dojo/_base/array", "dojo/_base/declare
             _fillSuggestions: function() {
                 this._emptySuggestions();
                 var searchText = this._inputNode.value;
+                var me = this;
                 arrayUtil.forEach(this._autoCompleteItems, function(item, index){
                     if (item.indexOf(searchText) == 0) {
                         var itemWidget = new SuggestionItem({suggestionText : item});
-                        itemWidget.appendTo(this._suggestionsNode);
+                        itemWidget.placeAt(me._suggestionsNode, "last");
                     }
                 });
                 this._showDropDown();
