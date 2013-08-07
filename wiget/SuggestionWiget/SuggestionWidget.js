@@ -2,40 +2,50 @@ define(["dojo/on", "dojo/_base/declare","dojo/_base/lang","dijit/_WidgetBase", "
     function(on, declare, lang, _WidgetBase, _TemplatedMixin, template, domStyle, baseFx, request){
         return declare([_WidgetBase, _TemplatedMixin], {
             _inputNode: null,
-            suggestionsNode: null,
+            _suggestionsNode: null,
 
             templateString: template,
             baseClass: "suggestionWidget",
 
-            autoCompleteItems: [],
+            _autoCompleteItems: null,
 
             _handleKeyUp: function(event) {
-                console.log("button pressed");
+                if (this._autoCompleteItems == null) {
+                    request("data/words.json", {
+                        handleAs: "json"
+                    }).then(function(words) {
+                        this.setAutoCompleteItems(words);
+                        this._fillSuggestions();
+                    });
+                }
+                this._fillDropDown();
             },
 
             _autoCompleteStart: function() {
             },
 
-            _fillDropDown: function(words) {
-                console.log(words);
+            _fillSuggestions: function() {
+                //TO DO: find matches
+                this._showDropDown();
             },
 
-            _openDropDown: function() {
+            _showDropDown: function() {
                 domStyle.set(domNode, "position", "relative");
                 domStyle.set(domNode, "display","block");
             },
 
-            _closeDropDown: function() {
+            _hideDropDown: function() {
                 domStyle.set(suggestionsNode, "display","none");
+            },
+
+            setAutoCompleteItems: function(words) {
+                this._autoCompleteItems = words;
             },
 
 
             postCreate: function(){
                 this.inherited(arguments);
                 console.log(this.inputNode);
-                request("data/words.json", {
-                    handleAs: "json"
-                }).then(this._fillDropDown);
 
                 this.own(
                     on(this._inputNode, "keyup", lang.hitch(this, this._handleKeyUp))
