@@ -33,13 +33,22 @@ define(["dojo/on", "dojo/keys" ,"dojo/dom-construct", "dojo/_base/array", "dojo/
               if (! this._hasSuggestions()) {
                   return;
               }
-              if (this._currentItemIndex == null) {
-
+              if (this._currentItemIndex == null || this._currentItemIndex == 0) {
+                  this._currentItemIndex = this._suggestionItemsList.length - 1;
+              } else {
+                  this._currentItemIndex =  this._currentItemIndex - 1;
               }
             },
 
             _moveSelectionDown: function() {
-
+                if (! this._hasSuggestions()) {
+                    return;
+                }
+                if (this._currentItemIndex == null || this._currentItemIndex == (this._suggestionItemsList.length - 1)) {
+                    this._currentItemIndex = 0;
+                } else {
+                    this._currentItemIndex =  this._currentItemIndex + 1;
+                }
             },
 
             _hasSuggestions: function() {
