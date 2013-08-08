@@ -48,24 +48,26 @@ define(["dojo/on", "dojo/keys" ,"dojo/dom-construct", "dojo/_base/array", "dojo/
 
             _addItem: function(item) {
                 console.log("Adding item " + item);
+                this._inputNode.value = '';
             },
 
             _moveSelectionUp: function() {
-              if (! this._hasSuggestions()) {
-                  return;
-              }
-              if (this._currentItemIndex == null || this._currentItemIndex == 0) {
-                  this._currentItemIndex = this._suggestionItemsList.length - 1;
-              } else {
-                  this._currentItemIndex =  this._currentItemIndex - 1;
-              }
+                if (! this._hasSuggestions()) {
+                    return;
+                }
+                if (this._currentItemIndex === null || this._currentItemIndex === 0) {
+                    this._currentItemIndex = this._suggestionItemsList.length - 1;
+                } else {
+                    this._currentItemIndex =  this._currentItemIndex - 1;
+                }
+              
             },
 
             _moveSelectionDown: function() {
                 if (! this._hasSuggestions()) {
                     return;
                 }
-                if (this._currentItemIndex == null || this._currentItemIndex == (this._suggestionItemsList.length - 1)) {
+                if (this._currentItemIndex === null || this._currentItemIndex == (this._suggestionItemsList.length - 1)) {
                     this._currentItemIndex = 0;
                 } else {
                     this._currentItemIndex =  this._currentItemIndex + 1;
@@ -73,12 +75,12 @@ define(["dojo/on", "dojo/keys" ,"dojo/dom-construct", "dojo/_base/array", "dojo/
             },
 
             _hasSuggestions: function() {
-              return this._suggestionItemsList != null && this._suggestionItemsList.length > 0;
+                return this._suggestionItemsList !== null && this._suggestionItemsList.length > 0;
             },
 
             _loadItems: function() {
                 var me = this;
-                if (this._autoCompleteItems == null) {
+                if (this._autoCompleteItems === null) {
                     request("data/words.json", {
                         handleAs: "json"
                     }).then(function(words) {
@@ -99,7 +101,7 @@ define(["dojo/on", "dojo/keys" ,"dojo/dom-construct", "dojo/_base/array", "dojo/
                 var searchText = this._inputNode.value;
                 var me = this;
                 arrayUtil.forEach(this._autoCompleteItems, function(item, index){
-                    if (item.indexOf(searchText) == 0) {
+                    if (item.indexOf(searchText) === 0) {
                         var itemWidget = new SuggestionItem({suggestionText : item});
                         me._suggestionItemsList.push(itemWidget);
                         itemWidget.placeAt(me._suggestionsNode, "last");
