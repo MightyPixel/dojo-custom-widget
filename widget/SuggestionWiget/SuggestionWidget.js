@@ -14,19 +14,31 @@ define(["dojo/on", "dojo/keys" ,"dojo/dom-construct", "dojo/_base/array", "dojo/
             _autoCompleteItems: null,
 
             _handleKeyUp: function(event) {
+                var charOrCode = event.charCode || event.keyCode;
+                
+                console.log(charOrCode);
 
-                switch(event.charOrCode) {
+                switch(charOrCode) {
                     case keys.UP_ARROW: this._moveSelectionUp();break;
                     case keys.DOWN_ARROW: this._moveSelectionDown(); break;
+                    case keys.ENTER:
+                        if (this._currentItemIndex === null) {
+                            this._enterItem();
+                        } else {
+                            this._selectCurrentItem();
+                        }
+                        break;
 
                     default: this._loadItems();
                 }
+            },
 
-                //TO DO:
-                //handle arrows
-                //handle escape
-                //handle enter
-
+            _enterItem: function() {
+                console.log("Enter " + this._inputNode.value);
+            },
+            
+            _selectCurrentItem: function() {
+                console.log("Selected item " + this._currentItemIndex);
             },
 
             _moveSelectionUp: function() {
