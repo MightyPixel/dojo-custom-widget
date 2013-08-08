@@ -1,12 +1,35 @@
-define(["dojo/on", "dojo/keys" ,"dojo/dom-construct", "dojo/_base/array", "dojo/_base/declare","dojo/_base/lang","dijit/_WidgetBase",
-    "dijit/_TemplatedMixin", "dojo/text!./SuggestionWidget.html", "dojo/dom-style", "dojo/_base/fx", "dojo/request",
-    "widget/SuggestionWiget/SuggestionItem/SuggestionItem.js"],
-    function(on,keys,domConstruct, arrayUtil, declare, lang, _WidgetBase, _TemplatedMixin, template, domStyle, baseFx, request, SuggestionItem){
+define(["dojo/on",
+        "dojo/keys",
+        "dojo/dom-construct",
+        "dojo/_base/array",
+        "dojo/_base/declare",
+        "dojo/_base/lang","dijit/_WidgetBase",
+        "dijit/_TemplatedMixin",
+        "dojo/text!./SuggestionWidget.html",
+        "dojo/dom-style",
+        "dojo/fx",
+        "dojo/request",
+        "dojo/dom",
+        "widget/SuggestionWiget/SuggestionItem/SuggestionItem.js"],
+    function(on,
+            keys,
+            domConstruct,
+            arrayUtil,
+            declare,
+            lang,
+            _WidgetBase,
+            _TemplatedMixin,
+            template,
+            domStyle,
+            fx,
+            request,
+            dom, 
+            SuggestionItem){
         return declare([_WidgetBase, _TemplatedMixin], {
             _inputNode: null,
             _suggestionsNode: null,
             _suggestionItemsList: [],
-            _currentItemIndex: null,
+            _currentItemIndex: 0,
 
             templateString: template,
             baseClass: "suggestionWidget",
@@ -33,6 +56,7 @@ define(["dojo/on", "dojo/keys" ,"dojo/dom-construct", "dojo/_base/array", "dojo/
 
             _enterItem: function() {
                 this._addItem(this._inputNode.value);
+                
             },
             
             _selectCurrentItem: function() {
@@ -49,6 +73,7 @@ define(["dojo/on", "dojo/keys" ,"dojo/dom-construct", "dojo/_base/array", "dojo/
             _addItem: function(item) {
                 console.log("Adding item " + item);
                 this._inputNode.value = '';
+                this._hideDropDown();
             },
 
             _moveSelectionUp: function() {
@@ -60,7 +85,7 @@ define(["dojo/on", "dojo/keys" ,"dojo/dom-construct", "dojo/_base/array", "dojo/
                 } else {
                     this._currentItemIndex =  this._currentItemIndex - 1;
                 }
-              
+                //this._suggestionItemsList[this._currentItemIndex]. 
             },
 
             _moveSelectionDown: function() {
@@ -89,7 +114,8 @@ define(["dojo/on", "dojo/keys" ,"dojo/dom-construct", "dojo/_base/array", "dojo/
                         me._fillSuggestions();
                     });
                 } else {
-                    this._fillSuggestions();
+                    me._fillSuggestions();
+                    console.log("fillign sugestions");
                 }
             },
 
@@ -116,12 +142,17 @@ define(["dojo/on", "dojo/keys" ,"dojo/dom-construct", "dojo/_base/array", "dojo/
             },
 
             _showDropDown: function() {
-                domStyle.set(this._suggestionsNode, "position", "relative");
-                domStyle.set(this._suggestionsNode, "display","block");
+                //domStyle.set(this._suggestionsNode, "position", "relative");
+                //domStyle.set(this._suggestionsNode, "display","block");
+                
+                // TODO precalculate node size
+
+                fx.wipeIn({ node: this._suggestionsNode }).play();
             },
 
             _hideDropDown: function() {
-                domStyle.set(this._suggestionsNode, "display","none");
+                fx.wipeOut({ node: this._suggestionsNode }).play();
+                console.log("hiding");
             },
 
             setAutoCompleteItems: function(words) {
