@@ -5,6 +5,8 @@ define(["dojo/on", "dojo/dom-construct", "dojo/_base/array", "dojo/_base/declare
         return declare([_WidgetBase, _TemplatedMixin], {
             _inputNode: null,
             _suggestionsNode: null,
+            _suggestionItemsList: [],
+            _currentItemIndex: null,
 
             templateString: template,
             baseClass: "suggestionWidget",
@@ -14,6 +16,14 @@ define(["dojo/on", "dojo/dom-construct", "dojo/_base/array", "dojo/_base/declare
             _handleKeyUp: function(event) {
 
                 var me = this;
+
+                //TO DO:
+                //handle arrows
+                //handle escape
+                //handle enter
+
+                //or
+
                 if (this._autoCompleteItems == null) {
                     request("data/words.json", {
                         handleAs: "json"
@@ -37,6 +47,7 @@ define(["dojo/on", "dojo/dom-construct", "dojo/_base/array", "dojo/_base/declare
                 arrayUtil.forEach(this._autoCompleteItems, function(item, index){
                     if (item.indexOf(searchText) == 0) {
                         var itemWidget = new SuggestionItem({suggestionText : item});
+                        me._suggestionItemsList.push(itemWidget);
                         itemWidget.placeAt(me._suggestionsNode, "last");
                     }
                 });
@@ -44,6 +55,7 @@ define(["dojo/on", "dojo/dom-construct", "dojo/_base/array", "dojo/_base/declare
             },
 
             _emptySuggestions: function() {
+                this._suggestionItemsList = [];
                 domConstruct.empty(this._suggestionsNode);
             },
 
