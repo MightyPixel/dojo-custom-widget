@@ -1,7 +1,7 @@
-define(["dojo/on", "dojo/dom-construct", "dojo/_base/array", "dojo/_base/declare","dojo/_base/lang","dijit/_WidgetBase",
+define(["dojo/on", "dojo/keys" ,"dojo/dom-construct", "dojo/_base/array", "dojo/_base/declare","dojo/_base/lang","dijit/_WidgetBase",
     "dijit/_TemplatedMixin", "dojo/text!./SuggestionWidget.html", "dojo/dom-style", "dojo/_base/fx", "dojo/request",
     "widget/SuggestionWiget/SuggestionItem/SuggestionItem.js"],
-    function(on, domConstruct, arrayUtil, declare, lang, _WidgetBase, _TemplatedMixin, template, domStyle, baseFx, request, SuggestionItem){
+    function(on,keys,domConstruct, arrayUtil, declare, lang, _WidgetBase, _TemplatedMixin, template, domStyle, baseFx, request, SuggestionItem){
         return declare([_WidgetBase, _TemplatedMixin], {
             _inputNode: null,
             _suggestionsNode: null,
@@ -15,15 +15,39 @@ define(["dojo/on", "dojo/dom-construct", "dojo/_base/array", "dojo/_base/declare
 
             _handleKeyUp: function(event) {
 
-                var me = this;
+                switch(event.charOrCode) {
+                    case keys.UP_ARROW: this._moveSelectionUp();break;
+                    case keys.DOWN_ARROW: this._moveSelectionDown(); break;
+
+                    default: this._loadItems();
+                }
 
                 //TO DO:
                 //handle arrows
                 //handle escape
                 //handle enter
 
-                //or
+            },
 
+            _moveSelectionUp: function() {
+              if (! this._hasSuggestions()) {
+                  return;
+              }
+              if (this._currentItemIndex == null) {
+
+              }
+            },
+
+            _moveSelectionDown: function() {
+
+            },
+
+            _hasSuggestions: function() {
+              return this._suggestionItemsList != null && this._suggestionItemsList.length > 0;
+            },
+
+            _loadItems: function() {
+                var me = this;
                 if (this._autoCompleteItems == null) {
                     request("data/words.json", {
                         handleAs: "json"
