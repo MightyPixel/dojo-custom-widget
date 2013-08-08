@@ -1,6 +1,6 @@
 define(["dojo/on", "dojo/dom-construct", "dojo/_base/array", "dojo/_base/declare","dojo/_base/lang","dijit/_WidgetBase",
     "dijit/_TemplatedMixin", "dojo/text!./SuggestionWidget.html", "dojo/dom-style", "dojo/_base/fx", "dojo/request",
-    "wiget/SuggestionWiget/SuggestionItem/SuggestionItem.js"],
+    "widget/SuggestionWiget/SuggestionItem/SuggestionItem.js"],
     function(on, domConstruct, arrayUtil, declare, lang, _WidgetBase, _TemplatedMixin, template, domStyle, baseFx, request, SuggestionItem){
         return declare([_WidgetBase, _TemplatedMixin], {
             _inputNode: null,
