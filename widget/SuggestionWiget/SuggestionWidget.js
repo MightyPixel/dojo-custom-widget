@@ -16,11 +16,10 @@ define(["dojo/on", "dojo/keys" ,"dojo/dom-construct", "dojo/_base/array", "dojo/
             _handleKeyUp: function(event) {
                 var charOrCode = event.charCode || event.keyCode;
                 
-                console.log(charOrCode);
-
                 switch(charOrCode) {
                     case keys.UP_ARROW: this._moveSelectionUp();break;
                     case keys.DOWN_ARROW: this._moveSelectionDown(); break;
+                    case keys.ESCAPE: this._escapeSuggestions();break;
                     case keys.ENTER:
                         if (this._currentItemIndex === null) {
                             this._enterItem();
@@ -28,17 +27,27 @@ define(["dojo/on", "dojo/keys" ,"dojo/dom-construct", "dojo/_base/array", "dojo/
                             this._selectCurrentItem();
                         }
                         break;
-
                     default: this._loadItems();
                 }
             },
 
             _enterItem: function() {
-                console.log("Enter " + this._inputNode.value);
+                this._addItem(this._inputNode.value);
             },
             
             _selectCurrentItem: function() {
-                console.log("Selected item " + this._currentItemIndex);
+                var selectedItemText = this._suggestionItemsList[this._currentItemIndex].suggestionText;
+                this._addItem(selectedItemText);
+            },
+
+            _escapeSuggestions: function() {
+                console.log("Escaping");
+                this._currentItemIndex = null;
+                this._emptySuggestions();
+            },
+
+            _addItem: function(item) {
+                console.log("Adding item " + item);
             },
 
             _moveSelectionUp: function() {
