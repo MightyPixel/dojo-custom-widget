@@ -9,8 +9,6 @@ define(["dojo/_base/declare",
              domStyle,
              template){
         return declare([_WidgetBase, _TemplatedMixin], {
-            suggestionTextNode: null,
-
             suggestionText: "Suggestion",
             templateString: template,
 
