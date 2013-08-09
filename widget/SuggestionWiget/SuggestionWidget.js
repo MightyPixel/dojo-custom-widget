@@ -7,9 +7,11 @@ define(["dojo/on",
         "dijit/_TemplatedMixin",
         "dojo/text!./SuggestionWidget.html",
         "dojo/dom-style",
+        "dojo/_base/fx",
         "dojo/fx",
         "dojo/request",
         "dojo/dom",
+        "dojo/_base/event",
         "widget/SuggestionWiget/SuggestionItem/SuggestionItem.js"],
     function(on,
             keys,
@@ -21,27 +23,43 @@ define(["dojo/on",
             _TemplatedMixin,
             template,
             domStyle,
+            baseFx,
             fx,
             request,
-            dom, 
+            dom,
+            baseEvent,
             SuggestionItem){
         return declare([_WidgetBase, _TemplatedMixin], {
             _inputNode: null,
             _suggestionsNode: null,
             _suggestionItemsList: [],
-            _currentItemIndex: 0,
+            _currentItemIndex: null,
 
             templateString: template,
             baseClass: "suggestionWidget",
 
             _autoCompleteItems: null,
 
+            postCreate: function(){
+                this.inherited(arguments);
+                this.own(
+                    on(this._inputNode, "keyup", lang.hitch(this,  this._handleKeyUp))
+                );
+            },
+
             _handleKeyUp: function(event) {
+
                 var charOrCode = event.charCode || event.keyCode;
                 
                 switch(charOrCode) {
-                    case keys.UP_ARROW: this._moveSelectionUp();break;
-                    case keys.DOWN_ARROW: this._moveSelectionDown(); break;
+                    case keys.UP_ARROW:
+                        this._moveSelectionUp();
+                        event.preventDefault();
+                        break;
+                    case keys.DOWN_ARROW:
+                        this._moveSelectionDown();
+                        event.preventDefault();
+                        break;
                     case keys.ESCAPE: this._escapeSuggestions();break;
                     case keys.ENTER:
                         if (this._currentItemIndex === null) {
@@ -54,9 +72,17 @@ define(["dojo/on",
                 }
             },
 
+            select: function() {
+                domStyle.set(this.domBase, "backgroundColor", "red");
+            },
+
+            diselect: function() {
+                domStyle.set(this.domBase, "backgroundColor", "white");
+            },
+
             _enterItem: function() {
                 this._addItem(this._inputNode.value);
-                
+                this._currentItemIndex = null;
             },
             
             _selectCurrentItem: function() {
@@ -68,35 +94,44 @@ define(["dojo/on",
                 console.log("Escaping");
                 this._currentItemIndex = null;
                 this._emptySuggestions();
+                // TODO empty VS hide?
             },
 
             _addItem: function(item) {
                 console.log("Adding item " + item);
                 this._inputNode.value = '';
-                this._hideDropDown();
+                this._emptySuggestions();
+                // TODO empty VS hide?
             },
 
             _moveSelectionUp: function() {
                 if (! this._hasSuggestions()) {
                     return;
                 }
+                var lastSelectedIndex = this._currentItemIndex;
                 if (this._currentItemIndex === null || this._currentItemIndex === 0) {
                     this._currentItemIndex = this._suggestionItemsList.length - 1;
                 } else {
                     this._currentItemIndex =  this._currentItemIndex - 1;
                 }
-                //this._suggestionItemsList[this._currentItemIndex]. 
+                this._suggestionItemsList[this._currentItemIndex].select();
+                if (lastSelectedIndex !== null)
+                    this._suggestionItemsList[lastSelectedIndex].diselect();
             },
 
             _moveSelectionDown: function() {
                 if (! this._hasSuggestions()) {
                     return;
                 }
+                var lastSelectedIndex = this._currentItemIndex;
                 if (this._currentItemIndex === null || this._currentItemIndex == (this._suggestionItemsList.length - 1)) {
                     this._currentItemIndex = 0;
                 } else {
                     this._currentItemIndex =  this._currentItemIndex + 1;
                 }
+                this._suggestionItemsList[this._currentItemIndex].select();
+                if (lastSelectedIndex !== null)
+                    this._suggestionItemsList[lastSelectedIndex].diselect();
             },
 
             _hasSuggestions: function() {
@@ -138,6 +173,7 @@ define(["dojo/on",
 
             _emptySuggestions: function() {
                 this._suggestionItemsList = [];
+                this._currentItemIndex = null;
                 domConstruct.empty(this._suggestionsNode);
             },
 
@@ -157,14 +193,6 @@ define(["dojo/on",
 
             setAutoCompleteItems: function(words) {
                 this._autoCompleteItems = words;
-            },
-
-
-            postCreate: function(){
-                this.inherited(arguments);
-                this.own(
-                    on(this._inputNode, "keyup", lang.hitch(this, this._handleKeyUp))
-                );
             }
 
         });
